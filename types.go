@@ -1,7 +1,8 @@
 package main
 
 type Root struct {
-	Highscores Highscores `json:"highscores"`
+	Highscores    Highscores    `json:"highscores"`
+	CharacterData CharacterData `json:"character"`
 }
 
 // Highscore represents an entry in the highscore list.
@@ -30,4 +31,61 @@ type Highscores struct {
 	HighscorePage HighscorePage `json:"highscore_page"`
 	Vocation      string        `json:"vocation"`
 	World         string        `json:"world"`
+}
+
+type Badge struct {
+	Description string `json:"description"`
+	IconURL     string `json:"icon_url"`
+	Name        string `json:"name"`
+}
+
+type AccountInformation struct {
+	Created      string `json:"created"`
+	LoyaltyTitle string `json:"loyalty_title"`
+	Position     string `json:"position"`
+}
+
+type Achievement struct {
+	Grade  int    `json:"grade"`
+	Name   string `json:"name"`
+	Secret bool   `json:"secret"`
+}
+
+type Guild struct {
+	Name string `json:"name"`
+	Rank string `json:"rank"`
+}
+
+type House struct {
+	HouseID int    `json:"houseid"`
+	Name    string `json:"name"`
+	Paid    string `json:"paid"`
+	Town    string `json:"town"`
+}
+
+type CharacterData struct {
+	Character `json:"character"`
+}
+
+type Character struct {
+	AccountStatus     string   `json:"account_status"`
+	AchievementPoints int      `json:"achievement_points"`
+	Comment           string   `json:"comment"`
+	DeletionDate      string   `json:"deletion_date"`
+	FormerNames       []string `json:"former_names"`
+	FormerWorlds      []string `json:"former_worlds"`
+	Guild             Guild    `json:"guild"`
+	Houses            []House  `json:"houses"`
+	LastLogin         string   `json:"last_login"`
+	Level             int      `json:"level"`
+	MarriedTo         string   `json:"married_to"`
+	Name              string   `json:"name"`
+	Position          string   `json:"position"`
+	Residence         string   `json:"residence"`
+	Sex               string   `json:"sex"`
+	Title             string   `json:"title"`
+	Traded            bool     `json:"traded"`
+	UnlockedTitles    int      `json:"unlocked_titles"`
+	Vocation          string   `json:"vocation"`
+	World             string   `json:"world"`
 }

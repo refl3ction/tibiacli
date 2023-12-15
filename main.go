@@ -37,7 +37,7 @@ func main() {
 	if category == "Highscores" {
 		highscores()
 	} else if category == "Characters" {
-		fmt.Println("Characters")
+		characters()
 	}
 }
 
