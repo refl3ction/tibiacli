@@ -8,6 +8,7 @@ import (
 
 	"github.com/carlmjohnson/requests"
 	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/huh/spinner"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -78,21 +79,27 @@ func highscores() {
 		log.Fatal(err)
 	}
 
-	getData(highscore, vocation)
+	action := func() {
+		getHighscore(highscore, vocation, "all")
+	}
+	err = spinner.New().Title("Loading data...").Action(action).Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func getData(category, vocation string) {
-	var res Root
+func getHighscore(category, vocation, world string) {
+	var highscoresResponse Root
 	err := requests.
 		URL(TIBIA_API_HOST).
-		Pathf("/v4/highscores/%s/%s/%s/%d", "all", category, vocation, 1).
-		ToJSON(&res).
+		Pathf("/v4/highscores/%s/%s/%s/%d", world, category, vocation, 1).
+		ToJSON(&highscoresResponse).
 		Fetch(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	showOutput(res.Highscores)
+	showOutput(highscoresResponse.Highscores)
 }
 
 func showOutput(highscores Highscores) {
