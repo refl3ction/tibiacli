@@ -18,12 +18,12 @@ var (
 func main() {
 	var category string
 	categories := []string{
-		"highscores",
-		"characters",
+		"Highscores",
+		"Characters",
 	}
 	form := huh.NewForm(
 		huh.NewGroup(
-			huh.NewSelect[string]().Title("Category.").Options(
+			huh.NewSelect[string]().Title("Select the category").Options(
 				huh.NewOptions(categories...)...,
 			).Value(&category),
 		),
@@ -33,37 +33,46 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if category == "highscores" {
+	if category == "Highscores" {
 		highscores()
-	} else if category == "characters" {
-		fmt.Println("characters")
+	} else if category == "Characters" {
+		fmt.Println("Characters")
 	}
 }
 
 func highscores() {
 	var highscore string
-	highscores := []string{
-		"achievements",
-		"axefighting",
-		"charmpoints",
-		"clubfighting",
-		"distancefighting",
-		"experience",
-		"fishing",
-		"fistfighting",
-		"goshnarstaint",
-		"loyaltypoints",
-		"magiclevel",
-		"shielding",
-		"swordfighting",
-		"dromescore",
-		"bosspoints",
+
+	highscores := []struct {
+		Key   string
+		Value string
+	}{
+		{"Achievements", "achievements"},
+		{"Axe Fighting", "axefighting"},
+		{"Charm Points", "charmpoints"},
+		{"Club Fighting", "clubfighting"},
+		{"Distance Fighting", "distancefighting"},
+		{"Experience", "experience"},
+		{"Fishing", "fishing"},
+		{"Fist Fighting", "fistfighting"},
+		{"Goshnars Taint", "goshnarstaint"},
+		{"Loyalty Points", "loyaltypoints"},
+		{"Magic Level", "magiclevel"},
+		{"Shielding", "shielding"},
+		{"Sword Fighting", "swordfighting"},
+		{"Drome Score", "dromescore"},
+		{"Boss Points", "bosspoints"},
+	}
+
+	var options []huh.Option[string]
+	for _, hs := range highscores {
+		options = append(options, huh.NewOption(hs.Key, hs.Value))
 	}
 
 	form := huh.NewForm(
 		huh.NewGroup(
-			huh.NewSelect[string]().Title("Highscores.").Options(
-				huh.NewOptions(highscores...)...,
+			huh.NewSelect[string]().Title("Highscores (Top 50)").Options(
+				options...,
 			).Value(&highscore),
 		),
 	)
