@@ -42,6 +42,7 @@ func main() {
 
 func highscores() {
 	var highscore string
+	var vocation string
 
 	form := huh.NewForm(
 		huh.NewGroup(
@@ -62,6 +63,13 @@ func highscores() {
 				huh.NewOption("Drome Score", "dromescore"),
 				huh.NewOption("Boss Points", "bosspoints"),
 			).Value(&highscore),
+			huh.NewSelect[string]().Title("Filter by vocation").Options(
+				huh.NewOption("All", "all").Selected(true),
+				huh.NewOption("Druid", "druid"),
+				huh.NewOption("Knight", "knight"),
+				huh.NewOption("Paladin", "paladin"),
+				huh.NewOption("Sorcerer", "sorcerer"),
+			).Value(&vocation),
 		),
 	)
 
@@ -70,12 +78,11 @@ func highscores() {
 		log.Fatal(err)
 	}
 
-	getData(highscore)
+	getData(highscore, vocation)
 }
 
-func getData(category string) {
+func getData(category, vocation string) {
 	var res Root
-	vocation := "all"
 	err := requests.
 		URL(TIBIA_API_HOST).
 		Pathf("/v4/highscores/%s/%s/%s/%d", "all", category, vocation, 1).
