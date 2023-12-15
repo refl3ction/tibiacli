@@ -43,36 +43,50 @@ func main() {
 func highscores() {
 	var highscore string
 
-	highscores := []struct {
-		Key   string
-		Value string
-	}{
-		{"Achievements", "achievements"},
-		{"Axe Fighting", "axefighting"},
-		{"Charm Points", "charmpoints"},
-		{"Club Fighting", "clubfighting"},
-		{"Distance Fighting", "distancefighting"},
-		{"Experience", "experience"},
-		{"Fishing", "fishing"},
-		{"Fist Fighting", "fistfighting"},
-		{"Goshnars Taint", "goshnarstaint"},
-		{"Loyalty Points", "loyaltypoints"},
-		{"Magic Level", "magiclevel"},
-		{"Shielding", "shielding"},
-		{"Sword Fighting", "swordfighting"},
-		{"Drome Score", "dromescore"},
-		{"Boss Points", "bosspoints"},
-	}
+	// highscores := []struct {
+	// 	Key   string
+	// 	Value string
+	// }{
+	// 	huh.NewOption({"Achievements", "achievements"}),
+	// 	huh.NewOption({"Axe Fighting", "axefighting"}),
+	// 	huh.NewOption({"Charm Points", "charmpoints"}),
+	// 	huh.NewOption({"Club Fighting", "clubfighting"}),
+	// 	huh.NewOption({"Distance Fighting", "distancefighting"}),
+	// 	huh.NewOption({"Experience", "experience"}),
+	// 	huh.NewOption({"Fishing", "fishing"}),
+	// 	huh.NewOption({"Fist Fighting", "fistfighting"}),
+	// 	huh.NewOption({"Goshnars Taint", "goshnarstaint"}),
+	// 	huh.NewOption({"Loyalty Points", "loyaltypoints"}),
+	// 	huh.NewOption({"Magic Level", "magiclevel"}),
+	// 	huh.NewOption({"Shielding", "shielding"}),
+	// 	huh.NewOption({"Sword Fighting", "swordfighting"}),
+	// 	huh.NewOption({"Drome Score", "dromescore"}),
+	// 	huh.NewOption({"Boss Points", "bosspoints"}),
+	// }
 
-	var options []huh.Option[string]
-	for _, hs := range highscores {
-		options = append(options, huh.NewOption(hs.Key, hs.Value))
-	}
+	// var options []huh.Option[string]
+	// for _, hs := range highscores {
+	// 	options = append(options, huh.NewOption(hs.Key, hs.Value))
+	// }
 
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().Title("Highscores (Top 50)").Options(
-				options...,
+				huh.NewOption("Achievements", "achievements"),
+				huh.NewOption("Axe Fighting", "axefighting"),
+				huh.NewOption("Charm Points", "charmpoints"),
+				huh.NewOption("Club Fighting", "clubfighting"),
+				huh.NewOption("Distance Fighting", "distancefighting"),
+				huh.NewOption("Experience", "experience"),
+				huh.NewOption("Fishing", "fishing"),
+				huh.NewOption("Fist Fighting", "fistfighting"),
+				huh.NewOption("Goshnars Taint", "goshnarstaint"),
+				huh.NewOption("Loyalty Points", "loyaltypoints"),
+				huh.NewOption("Magic Level", "magiclevel"),
+				huh.NewOption("Shielding", "shielding"),
+				huh.NewOption("Sword Fighting", "swordfighting"),
+				huh.NewOption("Drome Score", "dromescore"),
+				huh.NewOption("Boss Points", "bosspoints"),
 			).Value(&highscore),
 		),
 	)
