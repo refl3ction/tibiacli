@@ -49,10 +49,12 @@ func getCharacter(characterName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	printCharacter(response.CharacterData.Character)
+	printCharacter(response.CharacterData)
 }
 
-func printCharacter(character Character) {
+func printCharacter(characterData CharacterData) {
+	character := characterData.Character
+	account := characterData.AccountInformation
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetAlignment(tablewriter.ALIGN_LEFT)
 	table.SetRowLine(true)
@@ -66,15 +68,14 @@ func printCharacter(character Character) {
 	table.Append([]string{"Level", fmt.Sprint(character.Level)})
 	table.Append([]string{"Achievement Points", fmt.Sprint(character.AchievementPoints)})
 	table.Append([]string{"World", character.World})
-	table.Append([]string{"Account Status", character.AccountStatus})
 	// table.Append([]string{"Comment", character.Comment})
 	table.Append([]string{"Deletion Date", character.DeletionDate})
 	table.Append([]string{"Last Login", character.LastLogin})
 	table.Append([]string{"Married To", character.MarriedTo})
-	table.Append([]string{"Position", character.Position})
 	table.Append([]string{"Residence", character.Residence})
 	table.Append([]string{"Traded", fmt.Sprint(character.Traded)})
 	table.Append([]string{"Unlocked Titles", fmt.Sprint(character.UnlockedTitles)})
+	table.Append([]string{"Account Status", character.AccountStatus})
 
 	// Display guild info
 	if character.Guild.Name != "" {
@@ -95,5 +96,16 @@ func printCharacter(character Character) {
 		table.Append([]string{"Former Worlds", strings.Join(character.FormerWorlds, ", ")})
 	}
 
+	table.Render()
+
+	table = tablewriter.NewWriter(os.Stdout)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetRowLine(true)
+	table.SetHeader([]string{"Account Information"})
+	table.Append([]string{"Loyalty Title", account.LoyaltyTitle})
+	table.Append([]string{"Created", account.Created})
+	if account.Position != "" {
+		table.Append([]string{"Position", account.Position})
+	}
 	table.Render()
 }

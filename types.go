@@ -64,7 +64,8 @@ type House struct {
 }
 
 type CharacterData struct {
-	Character `json:"character"`
+	Character          `json:"character"`
+	AccountInformation `json:"account_information"`
 }
 
 type Character struct {
