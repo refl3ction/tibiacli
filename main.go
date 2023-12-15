@@ -1,111 +1,111 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"os"
 
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/carlmjohnson/requests"
+	"github.com/charmbracelet/huh"
+	"github.com/olekukonko/tablewriter"
+)
+
+var (
+	TIBIA_API_HOST = "https://api.tibiadata.com"
 )
 
 func main() {
-	p := tea.NewProgram(NewModel())
-	if err := p.Start(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
+	var category string
+	categories := []string{
+		"highscores",
+		"characters",
+	}
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().Title("Category.").Options(
+				huh.NewOptions(categories...)...,
+			).Value(&category),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if category == "highscores" {
+		highscores()
+	} else if category == "characters" {
+		fmt.Println("characters")
 	}
 }
 
-type model struct {
-	choices  []string         // items on the to-do list
-	cursor   int              // which to-do list item our cursor is pointing at
-	selected map[int]struct{} // which to-do items are selected
-}
-
-func NewModel() model {
-	return model{
-		// Our to-do list is a grocery list
-		choices: []string{"Highscores", "Characters"},
-
-		// A map which indicates which choices are selected. We're using
-		// the  map like a mathematical set. The keys refer to the indexes
-		// of the `choices` slice, above.
-		selected: make(map[int]struct{}),
+func highscores() {
+	var highscore string
+	highscores := []string{
+		"achievements",
+		"axefighting",
+		"charmpoints",
+		"clubfighting",
+		"distancefighting",
+		"experience",
+		"fishing",
+		"fistfighting",
+		"goshnarstaint",
+		"loyaltypoints",
+		"magiclevel",
+		"shielding",
+		"swordfighting",
+		"dromescore",
+		"bosspoints",
 	}
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().Title("Highscores.").Options(
+				huh.NewOptions(highscores...)...,
+			).Value(&highscore),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	getData(highscore)
 }
 
-func (m model) Init() tea.Cmd {
-	// Just return `nil`, which means "no I/O right now, please."
-	return nil
+func getData(category string) {
+	var res Root
+	vocation := "all"
+	err := requests.
+		URL(TIBIA_API_HOST).
+		Pathf("/v4/highscores/%s/%s/%s/%d", "all", category, vocation, 1).
+		ToJSON(&res).
+		Fetch(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	showOutput(res.Highscores)
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
+func showOutput(highscores Highscores) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Rank", "Name", "Level", "Value", "Vocation", "World"})
 
-	// Is it a key press?
-	case tea.KeyMsg:
-
-		// Cool, what was the actual key pressed?
-		switch msg.String() {
-
-		// These keys should exit the program.
-		case "ctrl+c", "q":
-			return m, tea.Quit
-
-		// The "up" and "k" keys move the cursor up
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-
-		// The "down" and "j" keys move the cursor down
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
-			}
+	for _, hs := range highscores.HighscoreList {
+		row := []string{
+			fmt.Sprint(hs.Rank),
+			hs.Name,
+			fmt.Sprint(hs.Level),
+			fmt.Sprint(hs.Value),
+			hs.Vocation,
+			hs.World,
 		}
+		table.Append(row)
 	}
 
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
-	return m, nil
-}
-
-func (m model) View() string {
-	// The header
-	s := "What do you want to see?\n\n"
-
-	// Iterate over our choices
-	for i, choice := range m.choices {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if m.cursor == i {
-			cursor = ">" // cursor!
-		}
-
-		// Is this choice selected?
-		checked := " " // not selected
-		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
-		}
-
-		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
-	}
-
-	// The footer
-	s += "\nPress q to quit.\n"
-
-	// Send the UI for rendering
-	return s
+	table.Render()
 }
