@@ -99,10 +99,10 @@ func getHighscore(category, vocation, world string) {
 		log.Fatal(err)
 	}
 
-	showOutput(highscoresResponse.Highscores)
+	printHighscores(highscoresResponse.Highscores)
 }
 
-func showOutput(highscores Highscores) {
+func printHighscores(highscores Highscores) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rank", "Name", "Level", "Value", "Vocation", "World"})
 
